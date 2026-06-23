@@ -1,0 +1,3 @@
+# source material, not needed by the site
+*.pdf
+.claude/

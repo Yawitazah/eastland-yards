@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eastland Yards — Realtor Presentation | Saussy Burbank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Poppins:wght@300;400;500;600;700&family=Sacramento&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#15205a; --gold:#dcb441; --orange:#e35a2b;
+    --sage:#a9c3a0; --cream:#f7f3ea; --cream-2:#faf7f0;
+    --ink:#26282a; --ink-soft:#3a3d40;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#0c0c10;color:var(--ink);font-family:"Poppins",system-ui,sans-serif;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+  .deck{position:relative;width:min(100vw, calc(100vh * 16 / 9));aspect-ratio:16/9;background:#000;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);user-select:none}
+  .slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s ease;container-type:size;font-size:1.5cqw}
+  .slide.active{opacity:1;visibility:visible;z-index:2}
+
+  h1,h2,h3{font-family:"Fraunces",serif;font-weight:600;line-height:1.03;font-optical-sizing:auto}
+  .script{font-family:"Sacramento",cursive}
+  .marker{font-family:"Caveat",cursive}
+
+  /* entrance animations */
+  .a{opacity:0;will-change:transform,opacity}
+  .a.up{transform:translateY(3cqh)} .a.dn{transform:translateY(-3cqh)}
+  .a.l{transform:translateX(-4cqh)} .a.r{transform:translateX(4cqh)}
+  .a.zoom{transform:scale(.9)} .a.rise{transform:translateY(4cqh) scale(.96)}
+  .slide.active .a{opacity:1;transform:none;transition:opacity .7s var(--d,0s) ease, transform .85s var(--d,0s) cubic-bezier(.16,.84,.28,1)}
+
+  .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.09);transition:transform 9s ease-out}
+  .slide.active .bg{transform:scale(1)}
+  .tint{position:absolute;inset:0}
+
+  .split{position:absolute;inset:0;display:flex}
+  .split .pane-text{flex:0 0 47%;background:var(--sage);padding:7cqh 4.2cqw;display:flex;flex-direction:column;justify-content:center}
+  .split .pane-media{flex:1;background:var(--cream-2);position:relative;overflow:hidden}
+  .split.cream .pane-text{background:var(--cream-2)}
+  .split.reverse{flex-direction:row-reverse}
+  .fill{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+  h2.big{font-size:5.3cqh;margin-bottom:.5em;color:var(--ink)}
+  h2.huge{font-size:8cqh;color:var(--ink)}
+  .body{font-size:2.75cqh;line-height:1.48;color:var(--ink-soft);font-weight:400}
+  .body p{margin-bottom:.8em}
+  .body u{text-decoration:underline}
+  .lead{font-size:3.5cqh;line-height:1.42}
+  .check{list-style:none;font-size:2.55cqh;line-height:1.42}
+  .check li{margin-bottom:.65em;display:flex;gap:.45em}
+  .ok{color:#2fae4e}
+
+  /* S1 title */
+  .s1 .bg{filter:saturate(.4) brightness(2.05) contrast(.88)}
+  .s1 .tint{background:linear-gradient(180deg,rgba(246,247,248,.7),rgba(210,218,222,.62))}
+  .seal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48cqh;height:48cqh}
+  .seal img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 26px rgba(0,0,0,.4))}
+  .s1 .seal.a.zoom{transform:translate(-50%,-50%) scale(.86)}
+  .s1.active .seal.a{transform:translate(-50%,-50%) scale(1)}
+
+  /* S2 collage */
+  .collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:1.1cqh;padding:3.2cqh 2cqw}
+  .collage img{width:100%;height:100%;object-fit:cover;border-radius:3px;box-shadow:0 3px 12px rgba(0,0,0,.18)}
+
+  /* S3 phases */
+  .s3{background:var(--cream-2)}
+  .s3 .s3head{position:absolute;top:5cqh;left:3.2cqw;right:3.2cqw;display:flex;justify-content:space-between;align-items:flex-start;z-index:4}
+  .s3 .s3head h2{font-size:5.6cqh}
+  .s3 .count{font-family:"Fraunces",serif;font-weight:600;font-size:4.1cqh;line-height:1.08;text-align:right;color:var(--ink)}
+  .s3 .s3body{position:absolute;top:19cqh;left:3.2cqw;right:3.2cqw;bottom:4cqh;display:grid;grid-template-columns:32% 1fr;gap:2.4cqw}
+  .s3 .left{display:flex;flex-direction:column;justify-content:center}
+  .s3 .model{width:100%;height:74%;object-fit:cover;border-radius:4px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+  .s3 .cap{font-size:2cqh;text-align:center;margin-top:.6em;font-style:italic;color:var(--ink-soft)}
+  .s3 .site{width:100%;height:100%;object-fit:contain}
+
+  /* S4 location */
+  .s4 .mapwrap{position:absolute;width:88%;height:80%;top:10%;left:6%;border-radius:3px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+  .s4 .mapwrap img{width:100%;height:100%;object-fit:cover}
+
+  /* S5 park */
+  .s5{background:var(--cream-2)}
+  .s5 .wrap{position:absolute;inset:0;display:grid;grid-template-columns:30% 30% 1fr;gap:1.5cqw;padding:6cqh 3cqw;align-items:center}
+  .s5 .tall{width:100%;height:84cqh;object-fit:cover;border-radius:4px}
+  .s5 .stack{display:grid;grid-template-rows:1fr 1fr;gap:2cqh;height:84cqh}
+  .s5 .stack img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+  .s5 .txt h2{font-size:6cqh;margin-bottom:.3em}
+
+  /* S6 urban */
+  .s6 .bg{object-position:left center;transform:scale(1.12)}
+  .s6.active .bg{transform:scale(1.02)}
+  .s6 .tint{background:linear-gradient(90deg,rgba(20,25,45,.18),rgba(20,25,45,.4))}
+  .card{position:absolute;top:5.5%;right:4.5%;bottom:5.5%;width:45%;background:rgba(247,243,234,.95);padding:3cqh 2.7cqw;display:flex;flex-direction:column;justify-content:center;border-radius:3px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+  .card h2{font-size:4.2cqh;text-align:center;margin-bottom:.4em}
+  .s6 .check li{margin-bottom:.42em}
+  .card .hubs{font-size:2.15cqh;margin-top:.35em;line-height:1.42}
+
+  /* S7 floor plans */
+  .s7{background:var(--sage)}
+  .s7 .grid{position:absolute;top:8%;left:4.5%;width:56%;bottom:8%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:1.3cqh}
+  .s7 .grid img{width:100%;height:100%;object-fit:cover;border-radius:2px}
+  .s7 .info{position:absolute;top:8%;right:3.5%;width:33%;bottom:8%;display:flex;flex-direction:column;justify-content:center;color:var(--navy)}
+  .s7 .info .logo{width:11cqh;height:11cqh;object-fit:contain;margin-bottom:.4em}
+  .s7 .info h2{font-size:6cqh;color:var(--navy);margin:.1em 0 .5em}
+  .s7 .info ul{list-style:none;font-size:2.75cqh;line-height:1.35}
+  .s7 .info li{margin-bottom:.55em;padding-left:1em;position:relative}
+  .s7 .info li::before{content:"";position:absolute;left:0;top:.55em;width:.5em;height:.5em;border-radius:50%;background:var(--navy)}
+
+  /* S8 design */
+  .s8 .pane-text{background:var(--cream-2);padding:4.5cqh 3.4cqw;justify-content:center}
+  .s8 .body{font-size:2.05cqh;line-height:1.36;margin-bottom:.85em}
+  .s8 .luxe{list-style:disc;margin:-.3em 0 .9em 1.5em;font-size:2.05cqh;line-height:1.32;color:var(--ink-soft)}
+  .s8 .luxe li{margin-bottom:.12em}
+  .pkg-h{text-align:center;margin-bottom:.7em}
+  .pkg-h .d{font-family:"Fraunces";font-size:4.6cqh;letter-spacing:.14em;color:var(--ink)}
+  .pkg-h .p{font-family:"Sacramento";font-size:7cqh;color:var(--ink);line-height:.6;display:block;margin-top:-.1em}
+  .pkg-sub{text-align:center;font-size:2.6cqh;color:var(--ink);margin-bottom:1.5em}
+  .pkg-sub small{display:block;font-size:2cqh;letter-spacing:.04em;margin-top:.2em}
+
+  /* S9 opportunities */
+  .s9{background:var(--cream-2)}
+  .s9 .wrap{position:absolute;inset:0;display:flex;align-items:center;padding:5cqh 3.5cqw;gap:2.4cqw}
+  .s9 .panel{flex:0 0 33%;align-self:stretch;background:var(--sage);border-radius:4px;display:flex;flex-direction:column;justify-content:center;padding:4cqh 2.3cqw}
+  .s9 .panel h2{font-size:5cqh;line-height:1.03;margin-bottom:.5em;color:var(--ink)}
+  .s9 .panel .body{font-size:2.15cqh;margin-bottom:.55em}
+  .s9 .cards{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;align-items:center;height:90cqh}
+  .s9 .cards img{width:100%;max-height:100%;object-fit:contain;border-radius:3px;box-shadow:0 5px 16px rgba(0,0,0,.2)}
+
+  /* S10 cta */
+  .s10 h2.cta{font-size:7.2cqh;text-transform:uppercase;line-height:.98;color:var(--ink)}
+  .s10 .comm{font-weight:700;font-size:3cqh;margin:.7em 0 .35em;color:var(--ink)}
+  .s10 .foot{font-size:1.7cqh;font-style:italic;color:var(--ink-soft);margin-top:1.4em}
+
+  /* S11 why */
+  .s11{background:var(--cream-2)}
+  .s11 .wrap{position:absolute;inset:0;display:flex;align-items:center}
+  .s11 .panel{flex:0 0 47%;align-self:stretch;background:var(--sage);display:flex;flex-direction:column;justify-content:center;padding:7cqh 3cqw}
+  .s11 .panel h2{font-size:4.4cqh;text-transform:uppercase;white-space:nowrap;margin-bottom:.5em}
+  .s11 .panel .body{font-size:2.4cqh}
+  .s11 .person{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .s11 .person img{width:34cqh;height:34cqh;object-fit:cover;border-radius:50%;box-shadow:0 8px 26px rgba(0,0,0,.2)}
+  .s11 .person .nm{font-family:"Fraunces";font-size:4cqh;margin-top:.5em;color:var(--ink)}
+  .s11 .person .ti{font-size:2.1cqh;color:var(--ink-soft)}
+
+  /* S12 thanks */
+  .s12 .bg{filter:brightness(.8)}
+  .s12 .tint{background:rgba(15,20,45,.42)}
+  .s12 .wordmark{position:absolute;top:13%;left:50%;transform:translateX(-50%);width:64%;height:20%;object-fit:contain}
+  .s12 .band{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:24%;background:#fff;display:flex;align-items:center;justify-content:center}
+  .s12 .band .script{font-size:17cqh;color:var(--navy);line-height:.7}
+  .s12 .qrow{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1.6cqw}
+  .s12 .qrow .marker{color:var(--orange);font-size:5cqh;transform:rotate(-5deg)}
+  .s12 .qrow .qr{width:17cqh;height:17cqh;object-fit:contain;background:#fff;padding:.6cqh;border-radius:3px}
+
+  /* Flyer inventory pages */
+  .sfly{background:var(--sage)}
+  .sfly .flybanner{position:absolute;top:3.5cqh;left:5cqw;right:5cqw;background:var(--navy);border-radius:6px;padding:2.1cqh 3cqw;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.25)}
+  .sfly .flybanner .when{font-family:"Fraunces",serif;font-weight:600;color:var(--gold);font-size:3.2cqh;margin-bottom:.18em;letter-spacing:.01em}
+  .sfly .flybanner .offer{color:#fff;font-size:2.05cqh;line-height:1.42;font-weight:300}
+  .sfly .flybanner .offer strong{color:var(--gold);font-weight:600}
+  .sfly .flygrid{position:absolute;left:3cqw;right:3cqw;top:19.5cqh;bottom:3cqh;display:grid;grid-template-columns:repeat(3,auto);grid-auto-rows:36.5cqh;justify-content:center;align-content:center;gap:1.8cqh 2cqw}
+  .sfly .flygrid img{height:36.5cqh;width:auto;max-width:100%;object-fit:contain;border-radius:3px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+
+  /* chrome */
+  .progress{position:absolute;top:0;left:0;height:3px;width:0;background:var(--gold);transition:width .35s ease;z-index:60}
+  .zone{position:absolute;top:0;bottom:8%;width:24%;z-index:30;cursor:pointer}
+  .zone.left{left:0}.zone.right{right:0;width:76%}
+  .nav{position:absolute;bottom:0;left:0;right:0;height:8%;display:flex;align-items:center;gap:1.2vw;padding:0 1.6vw;z-index:50;opacity:0;transition:opacity .25s;background:linear-gradient(0deg,rgba(0,0,0,.35),transparent)}
+  .deck:hover .nav{opacity:1}
+  .nav button{background:rgba(255,255,255,.92);border:none;width:clamp(28px,2.4vw,40px);height:clamp(28px,2.4vw,40px);border-radius:50%;cursor:pointer;font-size:clamp(15px,1.3vw,20px);color:#1a1a1a;display:flex;align-items:center;justify-content:center}
+  .nav button:hover{background:#fff}
+  .counter{color:#fff;font-size:clamp(12px,1vw,16px);font-weight:500;letter-spacing:.04em;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+  .spacer{flex:1}
+  .fs{color:#fff;cursor:pointer;font-size:clamp(13px,1.1vw,17px);opacity:.85;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+  .fs:hover{opacity:1}
+  .hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);color:#5e5e66;font-size:12px;z-index:1}
+  @media(max-width:700px){.hint{display:none}}
+</style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <div class="progress" id="progress"></div>
+
+    <!-- 1 TITLE -->
+    <section class="slide s1 active">
+      <img class="bg" src="assets/real/skyline.jpg" alt="" />
+      <div class="tint"></div>
+      <div class="seal a zoom"><img src="assets/real/seal.png" alt="Eastland Yards seal" /></div>
+    </section>
+
+    <!-- 2 SINGLE-FAMILY & TOWNHOMES -->
+    <section class="slide s2">
+      <div class="split">
+        <div class="pane-text">
+          <h2 class="big a up" style="--d:.05s">Single-Family &amp; Townhomes from the high $400k&rsquo;s</h2>
+          <div class="body">
+            <p class="a up" style="--d:.18s">Charlotte natives will surely remember Eastland Mall, which opened on Central Avenue in the mid 70&rsquo;s and at the time was the state&rsquo;s largest mall.</p>
+            <p class="a up" style="--d:.30s">Developer <u>Crosland Southeast</u> is overseeing the redevelopment of the 69-acre site, now called Eastland Yards, with plans to include residential, office, retail, hotel, sports and/or community facilities.</p>
+            <p class="a up" style="--d:.42s">The residential section of Eastland Yards will include apartments, single-family homes and townhomes; Saussy Burbank has been named the exclusive builder of the latter two.</p>
+          </div>
+        </div>
+        <div class="pane-media">
+          <div class="collage">
+            <img class="a zoom" style="--d:.10s" src="assets/real/mall1.jpg" alt="" />
+            <img class="a zoom" style="--d:.20s" src="assets/real/mall4.jpg" alt="" />
+            <img class="a zoom" style="--d:.30s" src="assets/real/mall3.jpg" alt="" />
+            <img class="a zoom" style="--d:.40s" src="assets/real/mall5.jpg" alt="" />
+            <img class="a zoom" style="--d:.50s" src="assets/real/mall2.jpg" alt="" />
+            <img class="a zoom" style="--d:.60s" src="assets/real/mall6.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 PHASES 1+2 -->
+    <section class="slide s3">
+      <div class="s3head">
+        <h2 class="a up" style="--d:.05s">Phases 1 + 2</h2>
+        <div class="count a dn" style="--d:.12s">21 Single Family<br/>17 Townhomes</div>
+      </div>
+      <div class="s3body">
+        <div class="left">
+          <img class="model a rise" style="--d:.2s" src="assets/real/model_home.png" alt="Model home — Alden 2245" />
+          <div class="cap a up" style="--d:.34s">Model Home Plan &mdash; Alden 2245E</div>
+        </div>
+        <img class="site a r" style="--d:.24s" src="assets/real/site_plan.png" alt="Eastland Yards site plan — 21 Single Family, 17 Townhomes" />
+      </div>
+    </section>
+
+    <!-- 4 LOCATION -->
+    <section class="slide s4">
+      <div class="split cream">
+        <div class="pane-text">
+          <h2 class="huge a up" style="--d:.05s">Location</h2>
+          <p class="lead body a up" style="--d:.2s;margin-top:.4em">Located in East Charlotte, Eastland Yards is convenient to Plaza Midwood, highways 24/27, I-77, I-85, I-277 &amp; 74, and Uptown Charlotte.</p>
+        </div>
+        <div class="pane-media" style="background:var(--sage)">
+          <div class="mapwrap a r" style="--d:.18s">
+            <img src="assets/real/map.png" alt="Map of Eastland Yards in East Charlotte" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 EASTLAND PARK -->
+    <section class="slide s5">
+      <div class="wrap">
+        <img class="tall a l" style="--d:.1s" src="assets/real/park_path.jpg" alt="Eastland Park walking path" />
+        <div class="stack">
+          <img class="a dn" style="--d:.22s" src="assets/real/park_aerial.jpg" alt="Eastland Park aerial" />
+          <img class="a up" style="--d:.34s" src="assets/real/park_splash.jpg" alt="Eastland Park splash pad" />
+        </div>
+        <div class="txt">
+          <h2 class="a up" style="--d:.18s">Eastland Park</h2>
+          <p class="body a up" style="--d:.30s;font-size:2.45cqh">The future 4.5-acre <u>Eastland Park</u>, designed by Mecklenburg County Parks and Recreation will include two lawn areas (one artificial and one natural turf with terraced seating), walking trails, covered picnic and performance areas, a restroom, playground with hillside play, splash pad, a multi-purpose court area (that can accommodate basketball, futsal, and hockey), skateable elements, fenced dog lounge, seating and landscaping.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 URBAN LIFESTYLE -->
+    <section class="slide s6">
+      <img class="bg" src="assets/real/skyline.jpg" alt="" />
+      <div class="tint"></div>
+      <div class="card a r" style="--d:.12s">
+        <h2 class="a up" style="--d:.22s">Urban Lifestyle, Just Minutes from Uptown Living</h2>
+        <p class="body a up" style="--d:.3s;font-size:2.15cqh;font-weight:500;margin-bottom:.3em">What Makes It Urban-Friendly:</p>
+        <ul class="check" style="font-size:2.1cqh">
+          <li class="a up" style="--d:.38s"><span class="ok">&#10003;</span><span>Close to Eastland redevelopment: exciting future growth, green spaces, and local retail</span></li>
+          <li class="a up" style="--d:.48s"><span class="ok">&#10003;</span><span>Easy access to key arteries: Independence Blvd., Central Ave, I-277</span></li>
+          <li class="a up" style="--d:.58s"><span class="ok">&#10003;</span><span>Public transportation nearby: Bus lines</span></li>
+          <li class="a up" style="--d:.68s"><span class="ok">&#10003;</span><span>Quick reach to lifestyle hubs:</span></li>
+        </ul>
+        <p class="hubs a up" style="--d:.78s">
+          <strong>Plaza Midwood:</strong> breweries, coffee shops, boutiques<br/>
+          <strong>Elizabeth:</strong> restaurants, walkable charm<br/>
+          <strong>Uptown Charlotte:</strong> arts, dining, professional life
+        </p>
+      </div>
+    </section>
+
+    <!-- 7 FLOOR PLANS -->
+    <section class="slide s7">
+      <div class="grid">
+        <img class="a zoom" style="--d:.06s" src="assets/real/house1.jpg" alt="" />
+        <img class="a zoom" style="--d:.12s" src="assets/real/house2.jpg" alt="" />
+        <img class="a zoom" style="--d:.18s" src="assets/real/house3.jpg" alt="" />
+        <img class="a zoom" style="--d:.24s" src="assets/real/house4.jpg" alt="" />
+        <img class="a zoom" style="--d:.30s" src="assets/real/house5.jpg" alt="" />
+        <img class="a zoom" style="--d:.36s" src="assets/real/house6.jpg" alt="" />
+        <img class="a zoom" style="--d:.42s" src="assets/real/house7.jpg" alt="" />
+        <img class="a zoom" style="--d:.48s" src="assets/real/house8.jpg" alt="" />
+        <img class="a zoom" style="--d:.54s" src="assets/real/house9.jpg" alt="" />
+      </div>
+      <div class="info">
+        <img class="logo a dn" style="--d:.1s" src="assets/real/sb_logo.png" alt="Saussy Burbank" />
+        <h2 class="a up" style="--d:.2s">Floor Plans &amp; Elevations</h2>
+        <ul>
+          <li class="a l" style="--d:.32s">4 Floor Plans offering 9 Elevations Total</li>
+          <li class="a l" style="--d:.40s">3BR/2.5 Bath</li>
+          <li class="a l" style="--d:.48s">1846&ndash;2243 Sq. Ft</li>
+          <li class="a l" style="--d:.56s">Detached 2-Car Garage</li>
+          <li class="a l" style="--d:.64s">Base Pricing Starts in the High $400k&rsquo;s</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8 DESIGN PACKAGES -->
+    <section class="slide s8">
+      <div class="split">
+        <div class="pane-media"><img class="fill a l" style="--d:.1s" src="assets/real/interior.jpg" alt="Curated interior finishes" /></div>
+        <div class="pane-text">
+          <div class="pkg-h a up" style="--d:.16s"><span class="d">DESIGN</span><span class="p">Packages</span></div>
+          <p class="pkg-sub a up" style="--d:.24s">Curated Design Packages to Fit Every Style<small>Traditional &nbsp;|&nbsp; Transitional &nbsp;|&nbsp; Modern</small></p>
+          <p class="body a up" style="--d:.34s"><span class="ok">&#9989;</span> <strong>Standard Package</strong> (Included):<br/>Professionally selected finishes that offer timeless design and quality materials, all included in the base price of the home.</p>
+          <p class="body a up" style="--d:.44s"><strong>&#10024; Luxe Package</strong> (Upgrade Available):<br/>For those seeking elevated touches, the Luxe package includes:</p>
+          <ul class="luxe a up" style="--d:.52s">
+            <li>Upgraded appliance package</li>
+            <li>Higher-level quartz countertops and designer tile selections</li>
+            <li>Select hardware</li>
+          </ul>
+          <p class="body a up" style="--d:.6s">Whether you prefer the warmth of Traditional, the clean lines of Modern, or the best-of-both-worlds Transitional, you&rsquo;ll find a design package that feels like home.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 INVENTORY — SINGLE-FAMILY -->
+    <section class="slide sfly">
+      <div class="flybanner a dn" style="--d:.06s">
+        <div class="when">Now through June 30, 2026</div>
+        <div class="offer"><strong>$15,000 in Flex Bucks + Screened Rear Porch</strong> available for Lots 115 &amp; 119 with a preferred lender<br/><strong>$10,000 in Flex Bucks</strong> available for all presales with a preferred lender</div>
+      </div>
+      <div class="flygrid">
+        <img class="a zoom" style="--d:.24s" src="assets/real/card_a1.jpg" alt="Lot 104 — Alden 2245E" />
+        <img class="a zoom" style="--d:.32s" src="assets/real/card_a2.jpg" alt="Lot 115 — Dawson 2217S" />
+        <img class="a zoom" style="--d:.40s" src="assets/real/card_a3.jpg" alt="Lot 116 — Beckett 2275E" />
+        <img class="a zoom" style="--d:.48s" src="assets/real/card_a4.jpg" alt="Lot 118 — Beckett 2275F" />
+        <img class="a zoom" style="--d:.56s" src="assets/real/card_a5.jpg" alt="Lot 119 — Dawson 2217E" />
+        <img class="a zoom" style="--d:.64s" src="assets/real/card_a6.jpg" alt="Lot 121 — Alden 2245E" />
+      </div>
+    </section>
+
+    <!-- 11 INVENTORY — TOWNHOMES -->
+    <section class="slide sfly">
+      <div class="flybanner a dn" style="--d:.06s">
+        <div class="when">Now through June 30, 2026</div>
+        <div class="offer"><strong>$15,000 in Flex Bucks</strong> available with a preferred lender on townhome purchases</div>
+      </div>
+      <div class="flygrid">
+        <img class="a zoom" style="--d:.24s" src="assets/real/card_b1.jpg" alt="Lot 107 — Ellwood A" />
+        <img class="a zoom" style="--d:.32s" src="assets/real/card_b2.jpg" alt="Lot 108 — Ellwood C" />
+        <img class="a zoom" style="--d:.40s" src="assets/real/card_b3.jpg" alt="Lot 109 — Ellwood BR" />
+        <img class="a zoom" style="--d:.48s" src="assets/real/card_b4.jpg" alt="Lot 110 — Ellwood B" />
+        <img class="a zoom" style="--d:.56s" src="assets/real/card_b5.jpg" alt="Lot 111 — Ellwood CR" />
+        <img class="a zoom" style="--d:.64s" src="assets/real/card_b6.jpg" alt="Lot 112 — Ellwood AR" />
+      </div>
+    </section>
+
+    <!-- 12 LET'S WORK TOGETHER -->
+    <section class="slide s10">
+      <div class="split cream">
+        <div class="pane-text">
+          <h2 class="cta a up" style="--d:.05s">Let&rsquo;s Work Together</h2>
+          <p class="comm a up" style="--d:.2s">2.5% COMMISSION*</p>
+          <p class="body a up" style="--d:.3s;font-size:2.85cqh">We value real estate agents, and are proud to pay licensed co-brokers at closing based on the total sales price, as shown on the closing disclosure*</p>
+          <p class="foot a up" style="--d:.42s">*4% commission on The Dawson 2217S</p>
+        </div>
+        <div class="pane-media"><img class="fill a r" style="--d:.15s" src="assets/real/event.jpg" alt="Saussy Burbank team with agents" /></div>
+      </div>
+    </section>
+
+    <!-- 11 WHY WORK WITH US -->
+    <section class="slide s11">
+      <div class="wrap">
+        <div class="panel">
+          <h2 class="a up" style="--d:.05s">Why Work With Me?</h2>
+          <p class="body a up" style="--d:.2s">At Saussy Burbank, I&rsquo;m more than just a new home builder &mdash; I&rsquo;m a collaborator. When you partner with me at Eastland Yards, you gain a partner who values transparency, communication, and delivering a product you can feel proud to represent. I have over 30 years of experience in the industry.</p>
+          <p class="body a up" style="--d:.32s;margin-top:.6em">Let&rsquo;s work together to help your clients find a home they&rsquo;ll love &mdash; and a partnership you&rsquo;ll want to return to again and again.</p>
+        </div>
+        <div class="person">
+          <img class="a zoom" style="--d:.25s" src="assets/real/headshot.jpg" alt="Thomasena Washington" />
+          <div class="nm a up" style="--d:.4s">Thomasena Washington</div>
+          <div class="ti a up" style="--d:.48s">New Home Consultant/Realtor&reg;</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 THANK YOU -->
+    <section class="slide s12">
+      <img class="bg" src="assets/real/skyline.jpg" alt="" />
+      <div class="tint"></div>
+      <img class="wordmark a zoom" style="--d:.12s" src="assets/real/wordmark.png" alt="Eastland Yards by Saussy Burbank" />
+      <div class="band"><span class="script a up" style="--d:.45s">Thank You!</span></div>
+      <div class="qrow">
+        <span class="marker a up" style="--d:.7s">Scan me</span>
+        <img class="qr a zoom" style="--d:.8s" src="assets/real/qr.png" alt="QR code" />
+      </div>
+    </section>
+
+    <div class="zone left" id="zl"></div>
+    <div class="zone right" id="zr"></div>
+
+    <div class="nav">
+      <button id="prev" aria-label="Previous">&#8249;</button>
+      <span class="counter"><span id="cur">1</span> / <span id="total">12</span></span>
+      <button id="next" aria-label="Next">&#8250;</button>
+      <span class="spacer"></span>
+      <span class="fs" id="fs">&#9974; Fullscreen</span>
+    </div>
+  </div>
+  <div class="hint">&larr; / &rarr; or Space &middot; click left/right &middot; F for fullscreen</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length; let i=0;
+  const cur=document.getElementById('cur'), prog=document.getElementById('progress'), deck=document.getElementById('deck');
+  document.getElementById('total').textContent=total;
+  function show(n){i=Math.max(0,Math.min(total-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));cur.textContent=i+1;prog.style.width=((i+1)/total*100)+'%';}
+  const next=()=>show(i+1), prev=()=>show(i-1);
+  document.getElementById('next').onclick=e=>{e.stopPropagation();next();};
+  document.getElementById('prev').onclick=e=>{e.stopPropagation();prev();};
+  document.getElementById('zr').onclick=next; document.getElementById('zl').onclick=prev;
+  function toggleFS(){document.fullscreenElement?document.exitFullscreen():deck.requestFullscreen();}
+  document.getElementById('fs').onclick=e=>{e.stopPropagation();toggleFS();};
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='Home')show(0); else if(e.key==='End')show(total-1);
+    else if(e.key==='f'||e.key==='F')toggleFS();
+  });
+  show(0);
+</script>
+</body>
+</html>
